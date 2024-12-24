@@ -2,6 +2,11 @@ name: Android CI
 
 on:
   workflow_dispatch: # Allows manual triggering
+    inputs:
+      branch:
+        description: 'Branch to build'
+        required: true
+        default: 'master' # Default branch to use if none is specified
 
 jobs:
   build:
