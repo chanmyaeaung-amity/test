@@ -43,7 +43,7 @@ jobs:
       id: generate_version_code
       run: |
           # Generate version code (current timestamp in seconds)
-          VERSION_CODE=$(java -e "System.out.println(System.currentTimeMillis() / 1000L);")
+          VERSION_CODE=$(date +%s)
           
           # Output the generated version code
           echo "Generated version code: $VERSION_CODE"
