@@ -50,6 +50,7 @@ jobs:
     - name: Commit and push changes
       run: |
         git config --global user.name "ekoserver"
+        git config --global user.email "chanmyae@amitysolutions.com"
         git commit -am "Applied ${{ github.event.inputs.client }} config and versioning"
         git push origin HEAD:refs/heads/${{ github.ref_name }}
 
