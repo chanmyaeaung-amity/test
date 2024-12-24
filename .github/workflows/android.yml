@@ -39,12 +39,24 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
+    - name: Generate version code using Java
+      id: generate_version_code
+      run: |
+          # Generate version code (current timestamp in seconds)
+          VERSION_CODE=$(java -e "System.out.println(System.currentTimeMillis() / 1000L);")
+          
+          # Output the generated version code
+          echo "Generated version code: $VERSION_CODE"
+          
+          # Save the generated version code for later use
+          echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
+
     - name: Update version
-      uses: jossef/action-set-json-field@v2.1
+      uses: sebasptsch/json-edit-action@v1.3.1
       with:
-        file: buildSrc/versioning.json
-        field: version_code
-        value: $(date +%s)
+        path: buildSrc/versioning.json
+        key: version_code
+        value: ${{ env.VERSION_CODE }}
 
 
     - name: Commit and push changes
