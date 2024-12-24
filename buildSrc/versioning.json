@@ -1,4 +1,4 @@
 {
-    "version_name": "17.4.0",
-    "version_code": 1735039931
+  "version_name": "17.4.0",
+  "version_code": "$(date +%s)"
 }
