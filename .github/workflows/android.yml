@@ -66,6 +66,20 @@ jobs:
         git commit -am "Applied ${{ github.event.inputs.client }} config and versioning"
         git push origin HEAD:refs/heads/${{ github.ref_name }}
 
+    - name: Set build variant
+      uses: sebasptsch/json-edit-action@v1.3.1
+      with:
+        path: buildSrc/build_variant.json
+        key: active_variant
+        value: ${{ github.event.inputs.client }}
+
+    - name: Commit and push changes
+      run: |
+        git config --global user.name "ekoserver"
+        git config --global user.email "chanmyae@amitysolutions.com"
+        git commit -am "Applied build variant"
+        git push origin HEAD:refs/heads/${{ github.ref_name }}
+
     - name: Cache Gradle dependencies
       uses: actions/cache@v3
       with:
@@ -79,7 +93,7 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
       
-    - name: Build Apk
+    - name: Build
       run: ./gradlew clean assembleDebug
 
     # Step 5: Upload APK as artifact
