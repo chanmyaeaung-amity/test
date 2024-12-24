@@ -7,6 +7,18 @@ on:
         description: 'Branch to build'
         required: true
         default: 'master' # Default branch to use if none is specified
+        type: string
+      client:
+        description: 'client'
+        required: true
+        default: 'staging'  # Optional default value
+        type: choice
+        options:
+          - staging
+          - ekogreen
+
+env:
+  VERSIONING_FILE: "buildSrc/versioning.json"
 
 jobs:
   build:
@@ -26,6 +38,20 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: gradle
+
+    - name: Update version
+      uses: jossef/action-set-json-field@v2.1
+      with:
+        file: buildSrc/versioning.json
+        field: version_code
+        value: $(date +%s)
+
+
+    - name: Commit and push changes
+      run: |
+        git config --global user.name "ekoserver"
+        git commit -am "Applied ${{ github.event.inputs.client }} config and versioning"
+        git push origin HEAD:refs/heads/${{ github.ref_name }}
 
     - name: Cache Gradle dependencies
       uses: actions/cache@v3
