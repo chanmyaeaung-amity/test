@@ -40,5 +40,12 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
       
-    - name: Build with Gradle
-      run: ./gradlew build
+    - name: Build Apk
+      run: ./gradlew clean assembleDebug
+
+    # Step 5: Upload APK as artifact
+    - name: Upload APK
+      uses: actions/upload-artifact@v4.5.0
+      with:
+        name: app-build-artifacts
+        path: app/build/outputs/apk/**/*.apk # Path to the built APK(s)
