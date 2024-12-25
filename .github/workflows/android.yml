@@ -39,6 +39,15 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
+    - name: Check System Resources
+      run: |
+        echo "CPU Info:"
+        lscpu
+        echo "Memory Info:"
+        free -h
+        echo "Disk Space Info:"
+        df -h
+
     - name: Generate version code using Java
       id: generate_version_code
       run: |
