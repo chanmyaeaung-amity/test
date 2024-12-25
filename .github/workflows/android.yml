@@ -32,7 +32,7 @@ jobs:
         ref: ${{ github.event.inputs.branch }} # Checkout the specified branch
     
     
-    - name: set up JDK 11
+    - name: set up JDK 17
       uses: actions/setup-java@v4
       with:
         java-version: '17'
@@ -89,9 +89,17 @@ jobs:
     - name: Build
       run: ./gradlew clean assembleDebug
 
-    # Step 5: Upload APK as artifact
-    - name: Upload APK
-      uses: actions/upload-artifact@v4.5.0
-      with:
-        name: app-build-artifacts
-        path: app/build/outputs/apk/**/*.apk # Path to the built APK(s)
+    - name: Tag
+      run: |
+        VERSIONING_FILE='buildSrc/versioning.json'
+        VERSION_NAME=$(jq -r '.version_name' $VERSIONING_FILE)
+        VERSION_CODE=$(jq -r '.version_code' $VERSIONING_FILE)
+        CLIENT="${{ github.event.inputs.client }}"
+        
+        # Generate the tag name
+        TAG_NAME="${CLIENT}-${VERSION_NAME}-${VERSION_CODE}"
+        echo "Generated tag: $TAG_NAME"
+        # Create and push the tag
+        git tag $TAG_NAME
+        git push origin $TAG_NAME
+
