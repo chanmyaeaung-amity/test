@@ -59,12 +59,12 @@ jobs:
 
 
 
-    - name: Commit and push changes
-      run: |
-        git config --global user.name "ekoserver"
-        git config --global user.email "chanmyae@amitysolutions.com"
-        git commit -am "Applied ${{ github.event.inputs.client }} config and versioning"
-        git push origin HEAD:refs/heads/${{ github.ref_name }}
+    # - name: Commit and push changes
+    #   run: |
+    #     git config --global user.name "ekoserver"
+    #     git config --global user.email "chanmyae@amitysolutions.com"
+    #     git commit -am "Applied ${{ github.event.inputs.client }} config and versioning"
+    #     git push origin HEAD:refs/heads/${{ github.ref_name }}
 
     - name: Set build variant
       uses: sebasptsch/json-edit-action@v1.3.1
@@ -89,17 +89,17 @@ jobs:
     - name: Build
       run: ./gradlew clean assembleDebug
 
-    - name: Tag
-      run: |
-        VERSIONING_FILE='buildSrc/versioning.json'
-        VERSION_NAME=$(jq -r '.version_name' $VERSIONING_FILE)
-        VERSION_CODE=$(jq -r '.version_code' $VERSIONING_FILE)
-        CLIENT="${{ github.event.inputs.client }}"
+    # - name: Tag
+    #   run: |
+    #     VERSIONING_FILE='buildSrc/versioning.json'
+    #     VERSION_NAME=$(jq -r '.version_name' $VERSIONING_FILE)
+    #     VERSION_CODE=$(jq -r '.version_code' $VERSIONING_FILE)
+    #     CLIENT="${{ github.event.inputs.client }}"
         
-        # Generate the tag name
-        TAG_NAME="${CLIENT}-${VERSION_NAME}-${VERSION_CODE}"
-        echo "Generated tag: $TAG_NAME"
-        # Create and push the tag
-        git tag $TAG_NAME
-        git push origin $TAG_NAME
+    #     # Generate the tag name
+    #     TAG_NAME="${CLIENT}-${VERSION_NAME}-${VERSION_CODE}"
+    #     echo "Generated tag: $TAG_NAME"
+    #     # Create and push the tag
+    #     git tag $TAG_NAME
+    #     git push origin $TAG_NAME
 
