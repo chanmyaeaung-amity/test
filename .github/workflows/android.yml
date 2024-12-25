@@ -50,13 +50,13 @@ jobs:
           
           # Save the generated version code for later use
           echo "VERSION_CODE=$VERSION_CODE" >> $GITHUB_ENV
+          
 
     - name: Update version
-      uses: sebasptsch/json-edit-action@v1.3.1
-      with:
-        path: buildSrc/versioning.json
-        key: version_code
-        value: ${{ env.VERSION_CODE }}
+      run: |
+        new_version_code=${{ github.event.inputs.new_version_code }}
+        jq ".version_code = $VERSION_CODE" buildSrc/versioning.json > tmp.json && mv tmp.json buildSrc/versioning.json
+
 
 
     - name: Commit and push changes
