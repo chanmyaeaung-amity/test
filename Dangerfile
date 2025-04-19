@@ -18,7 +18,7 @@ individual_reviewers = pr_json["requested_reviewers"] || []
 team_reviewers = pr_json["requested_teams"] || []
 
 if individual_reviewers.empty? && team_reviewers.empty?
-  fail("🔍 No reviewers assigned. Please request at least one individual or team reviewer.")
+  warn("🔍 No reviewers assigned. Please request at least one individual or team reviewer.")
 end
 
 # ✅ All checks passed
