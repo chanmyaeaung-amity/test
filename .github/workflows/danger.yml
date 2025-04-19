@@ -16,8 +16,10 @@ jobs:
         with:
           ruby-version: '3.2'
 
-      - name: Install Danger
-        run: gem install danger
+      - name: Install Danger and required gems
+        run: |
+          gem install danger
+          gem install faraday-retry
 
       - name: Run Danger
         run: danger
