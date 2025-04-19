@@ -15,6 +15,11 @@ danger(args) {
         allChecksPassed = false
     }
 
+    if (github.requestedReviewers.isNullOrEmpty() && github.requestedTeamReviewers.isNullOrEmpty()) {
+        fail("This PR must have at least one reviewer assigned.")
+        allChecksPassed = false
+    }
+
     if (allChecksPassed) {
         message("✅ All Danger checks passed!")
     }
