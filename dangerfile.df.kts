@@ -15,7 +15,8 @@ danger(args) {
         allChecksPassed = false
     }
 
-    if (github.requestedReviewers.isNullOrEmpty() && github.requestedTeamReviewers.isNullOrEmpty()) {
+    val reviewers = github.pullRequest.requestedReviewers
+    if (reviewers == null || reviewers.isEmpty()) {
         fail("This PR must have at least one reviewer assigned.")
         allChecksPassed = false
     }
