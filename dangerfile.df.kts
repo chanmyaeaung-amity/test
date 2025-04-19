@@ -1,4 +1,5 @@
 import systems.danger.kotlin.*
+import systems.danger.kotlin.github.GitHub
 
 danger(args) {
 
