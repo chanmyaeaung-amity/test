@@ -1,27 +1,56 @@
 import systems.danger.kotlin.*
 
 danger(args) {
+    // Warn if no changelog was modified
+    warnIfNoChangelog()
 
-    val allSourceFiles = git.modifiedFiles + git.createdFiles
-    val changelogChanged = allSourceFiles.contains("CHANGELOG.md")
-    val sourceChanges = allSourceFiles.firstOrNull { it.contains("src") }
+    // Fail if PR is too large
+    failIfLargePR()
 
-    onGitHub {
-        val isTrivial = pullRequest.title.contains("#trivial")
+    // Warn if PR title doesn't follow convention
+    checkPRTitle()
 
-        // Changelog
-        if (!isTrivial && !changelogChanged && sourceChanges != null) {
-            warn(WordUtils.capitalize("any changes to library code should be reflected in the Changelog.\n\nPlease consider adding a note there and adhere to the [Changelog Guidelines](https://github.com/Moya/contributors/blob/master/Changelog%20Guidelines.md)."))
-        }
+    // Highlight any .gradle or build config changes
+    highlightBuildConfigChanges()
 
-        // Big PR Check
-        if ((pullRequest.additions ?: 0) - (pullRequest.deletions ?: 0) > 300) {
-            warn("Big PR, try to keep changes smaller if you can")
-        }
+    // Mention author if editing core files
+    notifyOnSensitiveFileChanges()
+}
 
-        // Work in progress check
-        if (pullRequest.title.contains("WIP", false)) {
-            warn("PR is classed as Work in Progress")
-        }
+// --- Rules ---
+
+fun DangerDSL.warnIfNoChangelog() {
+    val hasChangelogUpdate = git.modifiedFiles.any { it.contains("CHANGELOG.md", ignoreCase = true) }
+    if (!hasChangelogUpdate) {
+        warn("No `CHANGELOG.md` update – please consider adding one if relevant.")
+    }
+}
+
+fun DangerDSL.failIfLargePR() {
+    val totalChanges = git.modifiedFiles.size + git.createdFiles.size + git.deletedFiles.size
+    if (totalChanges > 50) {
+        fail("This PR is too large ($totalChanges files changed) – consider splitting it up.")
+    }
+}
+
+fun DangerDSL.checkPRTitle() {
+    val title = github.pr.title
+    if (!title.matches(Regex("\\[(FEATURE|FIX|DOC|REFACTOR)] .+"))) {
+        warn("PR title should start with [FEATURE], [FIX], [DOC], or [REFACTOR] – current: `$title`")
+    }
+}
+
+fun DangerDSL.highlightBuildConfigChanges() {
+    val buildFiles = git.modifiedFiles.filter { it.contains("build.gradle") || it.contains("gradle.properties") }
+    if (buildFiles.isNotEmpty()) {
+        message(":wrench: Build config changed: ${buildFiles.joinToString(", ")}")
+    }
+}
+
+fun DangerDSL.notifyOnSensitiveFileChanges() {
+    val sensitive = listOf("src/main/AndroidManifest.xml", "proguard-rules.pro")
+    val touched = sensitive.filter { file -> git.modifiedFiles.any { it == file } }
+    if (touched.isNotEmpty()) {
+        warn("You modified sensitive files: ${touched.joinToString(", ")} – double check the changes.")
     }
 }
