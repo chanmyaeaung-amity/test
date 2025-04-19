@@ -16,6 +16,8 @@ danger(args) {
         allChecksPassed = false
     }
 
+    println("Pull Request Object: ${github.pullRequest}")
+
     val reviewers = github.pullRequest.requestedReviewers
     if (reviewers == null || reviewers.isEmpty()) {
         fail("This PR must have at least one reviewer assigned.")
