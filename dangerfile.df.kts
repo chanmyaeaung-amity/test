@@ -5,7 +5,7 @@ danger(args) {
     warn("This is a test warning from Danger!")
 
     var allChecksPassed = true
-    val title = github.pr.title
+    val title = pullRequest.title
 
     if (!title.contains(Regex("Feature|Bug|Refactor", RegexOption.IGNORE_CASE))) {
         warn("PR title should contain 'Feature', 'Bug', or 'Refactor' (case-insensitive).")
