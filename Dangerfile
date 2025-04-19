@@ -12,8 +12,13 @@ if !github.pr_body.match?(jira_link_regex)
 end
 
 # Check if there is reviewers
-if github.requested_reviewers.empty?
-  warn("🔍 No reviewers assigned. Please request at least one reviewer.")
+pr_json = github.pr_json
+
+individual_reviewers = pr_json["requested_reviewers"] || []
+team_reviewers = pr_json["requested_teams"] || []
+
+if individual_reviewers.empty? && team_reviewers.empty?
+  warn("🔍 No reviewers assigned. Please request at least one individual or team reviewer.")
 end
 
 # ✅ All checks passed
