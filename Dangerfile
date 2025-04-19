@@ -8,7 +8,7 @@ end
 # Check for Jira ticket link in PR body
 jira_link_regex = %r{https://ekoapp\.atlassian\.net/browse/[A-Z]+-\d+}
 if !github.pr_body.match?(jira_link_regex)
-  warn("Please include a Jira ticket link in the PR description (e.g. https://ekoapp.atlassian.net/browse/AE-1234)")
+  warn("Please include a Jira ticket link in the PR description.")
 end
 
 # Check if there is reviewers
@@ -18,7 +18,7 @@ individual_reviewers = pr_json["requested_reviewers"] || []
 team_reviewers = pr_json["requested_teams"] || []
 
 if individual_reviewers.empty? && team_reviewers.empty?
-  warn("🔍 No reviewers assigned. Please request at least one individual or team reviewer.")
+  fail("🔍 No reviewers assigned. Please request at least one individual or team reviewer.")
 end
 
 # ✅ All checks passed
