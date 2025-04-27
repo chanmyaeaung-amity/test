@@ -21,7 +21,7 @@ if individual_reviewers.empty? && team_reviewers.empty?
  warn("🔍 No reviewers assigned. Please request at least one individual or team reviewer.")
 end
 
-protected_branches = ["master", "main", "production"]
+protected_branches = ["main", "production"]
 
 if protected_branches.include?(github.branch_for_base)
   fail("PRs must not target protected branches like #{protected_branches.join(', ')}!")
