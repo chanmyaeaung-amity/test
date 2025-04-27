@@ -21,6 +21,16 @@ if individual_reviewers.empty? && team_reviewers.empty?
  warn("🔍 No reviewers assigned. Please request at least one individual or team reviewer.")
 end
 
+# Fail if no labels
+if github.pr_labels.empty?
+  fail("This PR must have at least one label.")
+end
+
+# Fail if no milestone
+if github.pr_json[:milestone].nil?
+  fail("This PR must be assigned to a milestone.")
+end
+
 # ✅ All checks passed
 if status_report[:warnings].empty? && status_report[:errors].empty?
   message("✅ All Danger checks passed! Great job!")
