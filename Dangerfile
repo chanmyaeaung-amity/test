@@ -8,7 +8,7 @@ end
 # Check for Jira ticket link in PR body
 jira_link_regex = %r{https://ekoapp\.atlassian\.net/browse/[A-Z]+-\d+}
 if !github.pr_body.match?(jira_link_regex)
-  warn("Please include a Jira ticket link in the PR description.")
+  fail("Please include a Jira ticket link in the PR description.")
 end
 
 # Check if there is reviewers
