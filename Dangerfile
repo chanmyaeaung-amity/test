@@ -40,6 +40,11 @@ end
 
 warn("Big PR 🚨 (#{git.lines_of_code} lines changed). Consider splitting it into smaller PRs.") if git.lines_of_code > 2
 
+large_bitmaps = git.diff_for_file("res/drawable/**/*.png").diff.select { |file| File.size(file) > 1000000 } # 1 MB
+if large_bitmaps.any?
+  warn("This PR introduces large bitmap files (over 1MB). Please optimize images before committing.")
+end
+
 # ✅ All checks passed
 if status_report[:warnings].empty? && status_report[:errors].empty?
   message("✅ All Danger checks passed! Great job!")
