@@ -38,7 +38,7 @@ if github.pr_json[:milestone].nil?
   fail("This PR must be assigned to a milestone.")
 end
 
-big_pr_threshold = 500
+big_pr_threshold = 2
 
 # Calculate total lines added + deleted safely
 additions = git.diff.stats[:insertions] || 0
