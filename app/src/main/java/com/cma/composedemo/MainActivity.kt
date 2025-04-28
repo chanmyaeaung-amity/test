@@ -20,5 +20,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun hello() {
         val result = "hello"
+
+
+        val result1 = "hello1"
     }
 }
