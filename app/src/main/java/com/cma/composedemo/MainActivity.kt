@@ -17,4 +17,8 @@ class MainActivity : AppCompatActivity() {
             insets
         }
     }
+
+    private fun hello() {
+        val result = "hello"
+    }
 }
