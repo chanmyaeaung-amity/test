@@ -41,12 +41,17 @@ end
 warn("Big PR 🚨 (#{git.lines_of_code} lines changed). Consider splitting it into smaller PRs.") if git.lines_of_code > 2
 
 
-bitmap_files = (git.added_files + git.modified_files).select { |path| path =~ %r{^res/drawable.*/.*\.png$} }
+threshold = 200 * 1024
 
-# Check their size (200 KB = 200 * 1024 bytes)
-large_bitmaps = bitmap_files.select { |path| File.exist?(path) && File.size(path) > 200 * 1024 }
+# Find added PNG files in any drawable folder
+bitmap_files = (git.added_files + git.modified_files).select { |path| path =~ %r{^res/drawable.*\/.*\.png$} }
 
-# Warn if any large bitmap files found
+# Warn if their *diff size* is large
+large_bitmaps = bitmap_files.select do |path|
+  diff = git.diff_for_file(path)
+  diff && diff.patch && diff.patch.bytesize > threshold
+end
+
 warn("Large bitmap images detected (>200KB): #{large_bitmaps.join(', ')}") if large_bitmaps.any?
 
 
