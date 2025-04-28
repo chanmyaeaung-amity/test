@@ -5,15 +5,23 @@ on:
     types: [opened, synchronize, reopened, edited]
 
 jobs:
-  build:
+  danger:
     runs-on: ubuntu-latest
-    name: "Run Danger"
+
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run Danger
-        uses: danger/kotlin@1.3.3
+      - name: Install Ruby
+        uses: ruby/setup-ruby@v1
         with:
-          dangerfile: dangerfile.df.kts
+          ruby-version: '3.2'
+
+      - name: Install Danger and required gems
+        run: |
+          gem install danger
+          gem install faraday-retry
+
+      - name: Run Danger
+        run: danger
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DANGER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
