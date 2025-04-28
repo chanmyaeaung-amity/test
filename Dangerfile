@@ -38,7 +38,7 @@ if github.pr_json[:milestone].nil?
   fail("This PR must be assigned to a milestone.")
 end
 
-warn("Big PR") if git.lines_of_code > 500
+warn("Big PR") if git.lines_of_code > 2
 
 # ✅ All checks passed
 if status_report[:warnings].empty? && status_report[:errors].empty?
