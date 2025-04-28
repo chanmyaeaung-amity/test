@@ -40,10 +40,15 @@ end
 
 warn("Big PR 🚨 (#{git.lines_of_code} lines changed). Consider splitting it into smaller PRs.") if git.lines_of_code > 2
 
-large_bitmaps = git.diff_for_file("res/drawable/**/*.png").diff.select { |file| File.size(file) > 1000000 } # 1 MB
-if large_bitmaps.any?
-  warn("This PR introduces large bitmap files (over 1MB). Please optimize images before committing.")
-end
+
+bitmap_files = (git.added_files + git.modified_files).select { |path| path =~ %r{^res/drawable.*/.*\.png$} }
+
+# Check their size (200 KB = 200 * 1024 bytes)
+large_bitmaps = bitmap_files.select { |path| File.exist?(path) && File.size(path) > 200 * 1024 }
+
+# Warn if any large bitmap files found
+warn("Large bitmap images detected (>200KB): #{large_bitmaps.join(', ')}") if large_bitmaps.any?
+
 
 # ✅ All checks passed
 if status_report[:warnings].empty? && status_report[:errors].empty?
