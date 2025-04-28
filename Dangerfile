@@ -38,11 +38,15 @@ if github.pr_json[:milestone].nil?
   fail("This PR must be assigned to a milestone.")
 end
 
-big_pr_threshold = 2
-total_changes = (git.lines_of_code[:added] + git.lines_of_code[:deleted])
+big_pr_threshold = 500
+
+# Calculate total lines added + deleted safely
+additions = git.diff.stats[:insertions] || 0
+deletions = git.diff.stats[:deletions] || 0
+total_changes = additions + deletions
 
 if total_changes > big_pr_threshold
-  warn("This PR is quite large (#{total_changes} lines changed)! Consider splitting into smaller PRs for easier review. 🧐")
+  warn("This PR is quite large (#{total_changes} lines changed)! Consider splitting it into smaller PRs. 🧐")
 end
 
 # ✅ All checks passed
