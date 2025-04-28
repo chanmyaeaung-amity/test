@@ -10,6 +10,15 @@ danger(args) {
         allChecksPassed = false
     }
 
+    if (!github.pullRequest.body.orEmpty().contains(Regex("https://ekoapp\\.atlassian\\.net/browse/[A-Z]+-\\d+"))) {
+        warn("PR description should contain a Jira ticket link")
+        allChecksPassed = false
+    }
+
+    println("Pull Request Object: ${github.pullRequest}")
+
+    
+
     if (allChecksPassed) {
         message("✅ All Danger checks passed!")
     }
