@@ -38,7 +38,20 @@ if github.pr_json[:milestone].nil?
   fail("This PR must be assigned to a milestone.")
 end
 
-warn("Big PR") if git.lines_of_code > 500
+warn("Big PR 🚨 (#{git.lines_of_code} lines changed). Consider splitting it into smaller PRs.") if git.lines_of_code > 2
+
+
+threshold = 200 * 1024
+
+# Find added PNG files in any drawable folder
+bitmap_files = (git.added_files + git.modified_files).select { |path| path =~ %r{^res/drawable.*\/.*\.png$} }
+
+# Warn if their *diff size* is large
+large_bitmaps = bitmap_files.select do |path|
+  diff = git.diff_for_file(path)
+  diff && diff.patch && diff.patch.bytesize > threshold
+end
+
 
 # ✅ All checks passed
 if status_report[:warnings].empty? && status_report[:errors].empty?
