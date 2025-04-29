@@ -52,8 +52,6 @@ large_bitmaps = bitmap_files.select do |path|
   diff && diff.patch && diff.patch.bytesize > threshold
 end
 
-warn("Large bitmap images detected (>200KB): #{large_bitmaps.join(', ')}") if large_bitmaps.any?
-
 
 # ✅ All checks passed
 if status_report[:warnings].empty? && status_report[:errors].empty?
